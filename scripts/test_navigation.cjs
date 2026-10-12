@@ -45,6 +45,8 @@ console.log('PASS posters, compact relative coordinates, all node bounds and all
   for(const prefix of ['/','/dawnwalker-guide/']){
    const base=server.base(prefix),context=await browser.newContext({viewport:{width:1401,height:1260}}),page=await context.newPage(),errors=[],remote=[];
    page.on('pageerror',e=>{errors.push(e.message);console.error(e.stack);});page.on('request',r=>{if(new URL(r.url()).origin!==new URL(base).origin)remote.push(r.url());});
+   page.on('console',message=>{if(message.type()==='error')console.error('Browser console:',message.text());});
+   page.on('requestfailed',request=>console.error('Browser request failed:',request.url(),request.failure()?.errorText));
    for(const [section,total] of Object.entries({quests:5,equipment:7,skills:3,consumables:2})){
     await page.goto(base+section+'/');await page.locator('[data-overview]').waitFor();assert.equal(await page.locator('.poster-link').count(),total);assert.equal(await page.locator('.item-card,.skill-node,.catalog-link').count(),0);assert.equal(await page.locator('#directory-tools').isVisible(),false);
     assert.deepEqual(await page.locator('.poster-link').evaluateAll(es=>es.map(e=>e.getAttribute('href'))),N.pages.filter(p=>p.section===section).map(p=>p.path));

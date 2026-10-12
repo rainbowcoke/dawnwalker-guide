@@ -23,7 +23,7 @@ Dawnwalker.createGlobalSearch=model=>{
   }
   async function load(){
     if(index)return index;
-    if(!loading)loading=fetch(new URL('assets/data/search-index.json',document.baseURI)).then(r=>{if(!r.ok)throw Error('search');return r.json();}).then(data=>index=data.items).finally(()=>loading=null);
+    if(!loading)loading=fetch(new URL('assets/data/search-index.json',document.baseURI)).then(r=>{if(!r.ok)throw Error('Search index request failed: '+r.status);return r.json();}).then(data=>index=data.items).finally(()=>loading=null);
     return loading;
   }
   function render(){
@@ -44,7 +44,7 @@ Dawnwalker.createGlobalSearch=model=>{
     const current=++ticket;if(reset)limits={};
     if(!input.value.trim()){panel.hidden=true;$('global-search-results').replaceChildren();$('global-search-status').textContent='';return;}
     try{await load();if(current===ticket&&isOpen())render();}
-    catch{if(current!==ticket||!isOpen())return;panel.hidden=false;positionResults();$('global-search-status').textContent='搜索加载失败。请检查网络连接后重试。';$('global-search-results').innerHTML='<wa-button appearance="outlined" size="s" id="retry-search" type="button">重新加载</wa-button>';Dawnwalker.ui.enhance($('global-search-results'));}
+    catch(error){if(current!==ticket||!isOpen())return;console.error('Global search failed:',error.message,error.stack);panel.hidden=false;positionResults();$('global-search-status').textContent='搜索加载失败。请检查网络连接后重试。';$('global-search-results').innerHTML='<wa-button appearance="outlined" size="s" id="retry-search" type="button">重新加载</wa-button>';Dawnwalker.ui.enhance($('global-search-results'));}
   }
   toggle.addEventListener('click',async()=>{
     if(isOpen()){close(true);return;}
