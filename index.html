@@ -1,42 +1,52 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="wa-dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
-<meta name="description" content="《黎明行者之血》中文任务指南：无剧透简介、任务故事、关键选择与不同结局。">
-<title>《黎明行者之血》中文任务指南</title>
+<meta name="description" content="《黎明行者之血》中文游戏指南：任务、装备等级属性、技能树、消耗品与制作配方。">
+<link rel="canonical" href="https://rainbowcoke.github.io/dawnwalker-guide/">
+<title>《黎明行者之血》中文游戏指南</title>
+<link rel="stylesheet" href="assets/vendor/guide-ui.css">
 <link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/references.css">
+<link rel="stylesheet" href="css/navigation.css">
+<link rel="stylesheet" href="css/overview.css">
 </head>
 <body>
 <a class="skip" href="#reader">跳到阅读区</a>
 <header class="masthead">
-<a href="#" class="brand" aria-label="返回指南首页"><span class="sigil" aria-hidden="true"></span><span><span class="brand-overline">THE BLOOD OF</span><span class="brand-name">DAWNWALKER</span></span></a>
-<div class="masthead-actions">
-<div class="masthead-label"><span>《黎明行者之血》</span><strong>中文任务指南</strong></div>
-<a class="repo-link" href="https://github.com/rainbowcoke/dawnwalker-quests" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 GitHub 仓库"><span class="repo-wide">GitHub 仓库</span><span class="repo-short">仓库</span><span aria-hidden="true">↗</span></a>
-</div>
+<a href="./" class="brand" aria-label="返回指南首页"><span class="sigil" aria-hidden="true"></span><span class="brand-copy"><span class="brand-overline">THE BLOOD OF DAWNWALKER</span><span class="brand-name">《黎明行者之血》指南</span></span></a>
+<nav class="primary-navigation" aria-label="指南栏目"><div class="nav-group"><wa-dropdown class="nav-dropdown" placement="bottom-start" distance="6"><a slot="trigger" class="nav-label" data-section="quests" href="quests/">任务</a><wa-dropdown-item href="quests/main-story/" data-page="quests/main-story/"><span>主线与结局</span></wa-dropdown-item><wa-dropdown-item href="quests/character-lines/" data-page="quests/character-lines/"><span>人物任务线</span></wa-dropdown-item><wa-dropdown-item href="quests/standalone/" data-page="quests/standalone/"><span>独立任务</span></wa-dropdown-item><wa-dropdown-item href="quests/court-activities/" data-page="quests/court-activities/"><span>宫廷活动</span></wa-dropdown-item><wa-dropdown-item href="quests/exploration/" data-page="quests/exploration/"><span>探索集合</span></wa-dropdown-item></wa-dropdown><div class="nav-fallback"><a href="quests/main-story/"><span>主线与结局</span></a><a href="quests/character-lines/"><span>人物任务线</span></a><a href="quests/standalone/"><span>独立任务</span></a><a href="quests/court-activities/"><span>宫廷活动</span></a><a href="quests/exploration/"><span>探索集合</span></a></div></div><div class="nav-group"><wa-dropdown class="nav-dropdown" placement="bottom-start" distance="6"><a slot="trigger" class="nav-label" data-section="equipment" href="equipment/">装备</a><wa-dropdown-item href="equipment/weapons/" data-page="equipment/weapons/"><span>武器</span></wa-dropdown-item><wa-dropdown-item href="equipment/upper-body/" data-page="equipment/upper-body/"><span>上装</span></wa-dropdown-item><wa-dropdown-item href="equipment/lower-body/" data-page="equipment/lower-body/"><span>下装</span></wa-dropdown-item><wa-dropdown-item href="equipment/gloves/" data-page="equipment/gloves/"><span>护手</span></wa-dropdown-item><wa-dropdown-item href="equipment/boots/" data-page="equipment/boots/"><span>靴子</span></wa-dropdown-item><wa-dropdown-item href="equipment/necklaces/" data-page="equipment/necklaces/"><span>项链</span></wa-dropdown-item><wa-dropdown-item href="equipment/rings/" data-page="equipment/rings/"><span>戒指</span></wa-dropdown-item></wa-dropdown><div class="nav-fallback"><a href="equipment/weapons/"><span>武器</span></a><a href="equipment/upper-body/"><span>上装</span></a><a href="equipment/lower-body/"><span>下装</span></a><a href="equipment/gloves/"><span>护手</span></a><a href="equipment/boots/"><span>靴子</span></a><a href="equipment/necklaces/"><span>项链</span></a><a href="equipment/rings/"><span>戒指</span></a></div></div><div class="nav-group"><wa-dropdown class="nav-dropdown" placement="bottom-start" distance="6"><a slot="trigger" class="nav-label" data-section="skills" href="skills/">技能</a><wa-dropdown-item href="skills/witchcraft/" data-page="skills/witchcraft/"><img src="assets/catalog/ui/953704833eb3ba3285b3.webp" alt="" class="game-symbol" slot="icon"><span>巫术</span></wa-dropdown-item><wa-dropdown-item href="skills/swordsmanship/" data-page="skills/swordsmanship/"><img src="assets/catalog/ui/15c8b2af23cffb526e69.webp" alt="" class="game-symbol" slot="icon"><span>剑术</span></wa-dropdown-item><wa-dropdown-item href="skills/vampirism/" data-page="skills/vampirism/"><img src="assets/catalog/ui/fb8d916b72700af45498.webp" alt="" class="game-symbol" slot="icon"><span>血族</span></wa-dropdown-item></wa-dropdown><div class="nav-fallback"><a href="skills/witchcraft/"><img src="assets/catalog/ui/953704833eb3ba3285b3.webp" alt="" class="game-symbol" slot="icon"><span>巫术</span></a><a href="skills/swordsmanship/"><img src="assets/catalog/ui/15c8b2af23cffb526e69.webp" alt="" class="game-symbol" slot="icon"><span>剑术</span></a><a href="skills/vampirism/"><img src="assets/catalog/ui/fb8d916b72700af45498.webp" alt="" class="game-symbol" slot="icon"><span>血族</span></a></div></div><div class="nav-group"><wa-dropdown class="nav-dropdown" placement="bottom-start" distance="6"><a slot="trigger" class="nav-label" data-section="consumables" href="consumables/">消耗品</a><wa-dropdown-item href="consumables/craftable/" data-page="consumables/craftable/"><span>制作</span></wa-dropdown-item><wa-dropdown-item href="consumables/non-craftable/" data-page="consumables/non-craftable/"><span>非制作</span></wa-dropdown-item></wa-dropdown><div class="nav-fallback"><a href="consumables/craftable/"><span>制作</span></a><a href="consumables/non-craftable/"><span>非制作</span></a></div></div></nav>
+<div class="masthead-actions"><div id="header-search" class="header-search js-only"><wa-button appearance="outlined" size="s" id="global-search-toggle" class="icon-button" type="button" aria-label="展开全局搜索" aria-expanded="false" aria-controls="global-search-controls"><i data-lucide="search" aria-hidden="true"></i></wa-button><div id="global-search-controls" class="header-search-controls" hidden><wa-input size="s" value="" id="global-search-input" type="search" aria-label="搜索全部指南" placeholder="搜索任务、装备、技能和消耗品" autocomplete="off"><i slot="start" data-lucide="search" aria-hidden="true"></i></wa-input><wa-button appearance="outlined" size="s" id="close-search" class="icon-button" type="button" aria-label="收起全局搜索"><i data-lucide="x" aria-hidden="true"></i></wa-button></div><div id="global-search-results-popup" class="header-search-results" aria-label="全局搜索结果" hidden><p id="global-search-status" role="status" aria-live="polite"></p><div id="global-search-results"></div></div></div><a class="repo-link icon-button" href="https://github.com/rainbowcoke/dawnwalker-guide" target="_blank" rel="noopener noreferrer" aria-label="在新标签页打开 GitHub 仓库" title="GitHub"><svg data-lucide="github" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 19c-4.3 1.3-4.3-2.2-6-2.7M15 22v-3.4c0-1 .1-1.6-.5-2.2 3.3-.4 6.7-1.6 6.7-7.3a5.7 5.7 0 0 0-1.5-4c.2-.5.6-2-.2-4 0 0-1.2-.4-4 1.5a14 14 0 0 0-7 0C5.7.7 4.5 1.1 4.5 1.1c-.8 2-.4 3.5-.2 4a5.7 5.7 0 0 0-1.5 4c0 5.7 3.4 6.9 6.7 7.3-.5.5-.6 1.1-.5 2.2V22"/></svg></a></div>
 </header>
-<main class="workspace">
-<aside id="directory" class="directory" aria-label="任务目录">
-<div class="directory-tools">
-<div class="section-label"><span>故事索引</span><span aria-hidden="true">✧</span></div>
-<label class="sr-only" for="search">搜索任务、英文名称或人物</label>
-<div class="search-box"><svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg><input id="search" type="search" placeholder="搜索任务、人物或关键词" autocomplete="off"></div>
-<div class="filter-row"><label class="sr-only" for="category">故事分类</label><span class="select-wrap"><select id="category"><option value="">全部故事</option></select></span><button id="reset" type="button">重置</button></div>
-</div>
-<nav id="catalog" aria-label="故事索引"></nav>
-<p id="empty" class="empty" hidden>未找到相符的故事。<br>试试人物名或任务的英文名。</p>
-<p id="search-status" class="sr-only" role="status" aria-live="polite"></p>
-</aside>
-<section id="reader" class="reader" aria-label="故事阅读区" tabindex="-1"></section>
-</main>
-<noscript>请启用 JavaScript，以浏览任务目录与故事。</noscript>
+<main class="workspace"><section id="reader" class="reader" aria-label="游戏资料" tabindex="-1"></section></main>
+<div id="tools-home" hidden><div id="directory-tools" class="page-filters">
+<div class="filter-field search-field"><span class="field-label" id="search-label">搜索本页</span><wa-input size="s" value="" id="search" aria-label="搜索本页" type="search" aria-labelledby="search-label" placeholder="搜索名称或效果" autocomplete="off"><i slot="start" data-lucide="search" aria-hidden="true"></i></wa-input></div>
+<div id="equipment-level" class="filter-field equipment-level" hidden><span class="field-label" id="level-label">装备等级</span><wa-select size="s" id="level" aria-label="装备等级" value="50" aria-labelledby="level-label"><wa-option value="1">1级</wa-option><wa-option value="2">2级</wa-option><wa-option value="3">3级</wa-option><wa-option value="4">4级</wa-option><wa-option value="5">5级</wa-option><wa-option value="6">6级</wa-option><wa-option value="7">7级</wa-option><wa-option value="8">8级</wa-option><wa-option value="9">9级</wa-option><wa-option value="10">10级</wa-option><wa-option value="11">11级</wa-option><wa-option value="12">12级</wa-option><wa-option value="13">13级</wa-option><wa-option value="14">14级</wa-option><wa-option value="15">15级</wa-option><wa-option value="16">16级</wa-option><wa-option value="17">17级</wa-option><wa-option value="18">18级</wa-option><wa-option value="19">19级</wa-option><wa-option value="20">20级</wa-option><wa-option value="21">21级</wa-option><wa-option value="22">22级</wa-option><wa-option value="23">23级</wa-option><wa-option value="24">24级</wa-option><wa-option value="25">25级</wa-option><wa-option value="26">26级</wa-option><wa-option value="27">27级</wa-option><wa-option value="28">28级</wa-option><wa-option value="29">29级</wa-option><wa-option value="30">30级</wa-option><wa-option value="31">31级</wa-option><wa-option value="32">32级</wa-option><wa-option value="33">33级</wa-option><wa-option value="34">34级</wa-option><wa-option value="35">35级</wa-option><wa-option value="36">36级</wa-option><wa-option value="37">37级</wa-option><wa-option value="38">38级</wa-option><wa-option value="39">39级</wa-option><wa-option value="40">40级</wa-option><wa-option value="41">41级</wa-option><wa-option value="42">42级</wa-option><wa-option value="43">43级</wa-option><wa-option value="44">44级</wa-option><wa-option value="45">45级</wa-option><wa-option value="46">46级</wa-option><wa-option value="47">47级</wa-option><wa-option value="48">48级</wa-option><wa-option value="49">49级</wa-option><wa-option value="50">50级</wa-option><i slot="expand-icon" data-lucide="chevron-down" aria-hidden="true"></i></wa-select></div>
+<div id="reference-filters" class="reference-filters"></div><wa-button appearance="outlined" size="s" id="reset" type="button">重置</wa-button>
+</div></div>
+<wa-dialog id="item-dialog" class="item-dialog" label="物品卡片" without-header light-dismiss>
+<div class="modal-header"><span id="dialog-label"></span><wa-button appearance="outlined" size="s" id="close-item" type="button" autofocus aria-label="关闭卡片"><i data-lucide="x" aria-hidden="true"></i></wa-button></div>
+<wa-tooltip for="close-item" trigger="hover">关闭卡片（Esc）</wa-tooltip>
+<div id="modal-scroll" class="modal-scroll"><div id="dialog-content"></div></div>
+</wa-dialog>
+<noscript><p class="noscript-hint">可以浏览物品信息。启用 JavaScript 后可使用筛选、浮窗和技能加点。</p></noscript>
+<script id="catalog-counts">window.DawnwalkerCounts={"equipment":542,"skills":90,"consumables":102};</script>
 <script defer src="js/model.js"></script>
+<script defer src="assets/vendor/guide-ui.js"></script>
+<script defer src="js/navigation.js"></script>
+<script defer src="js/overview.js"></script>
+<script defer src="js/ui.js"></script>
+<script defer src="js/tree-layout.js"></script>
+<script defer src="js/presentation.js"></script>
 <script defer src="js/catalog.js"></script>
 <script defer src="js/reader.js"></script>
+<script defer src="js/planner.js"></script>
+<script defer src="js/references.js"></script>
 <script defer src="js/router.js"></script>
 <script defer src="assets/guide-data.js"></script>
+<script defer src="js/global-search.js"></script>
 <script defer src="js/app.js"></script>
 </body>
 </html>

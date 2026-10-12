@@ -2,14 +2,14 @@
 Dawnwalker.createReader = (model,remember) => {
   const {entries,quests,types,esc,link,href,portraitList,questRelations}=model;
   function topLine(label) {
-    return `<div class="reader-topline"><button class="mobile-back" type="button">← 返回目录</button><span class="desktop-label">桑格拉山谷 / 任务指南</span><span>${esc(label)}</span></div>`;
+    return `<div class="reader-topline"><span class="desktop-label">桑格拉山谷 / 任务指南</span><span>${esc(label)}</span></div>`;
   }
   function card(qid,context) {
     const q=quests.get(qid);
     return `<a class="quest-card" href="${href(qid,context)}"><span class="card-title">${esc(q.cn)}</span><span class="card-en" lang="en">${esc(q.en)}</span><span class="card-intro">${esc(q.intro)}</span></a>`;
   }
   function renderHome() {
-    return `${topLine('故事与抉择')}<div class="welcome"><p class="eyebrow">VALE SANGORA · QUEST COMPANION</p><h1>循着线索，<br>重访每一段故事。</h1><p class="intro">从一个名字、一位故人，或记忆中的一次相遇开始。寻找任务的开端，再读懂每个选择留下的结局。</p><div class="ornament" aria-hidden="true">✧</div><div class="feature-grid"><a class="feature" href="#prologue"><span class="eyebrow">主线与结局</span><h2>家园与血誓</h2><p>从拉斯利亚出发，寻找家人与盟友。</p></a><a class="feature" href="#anca"><span class="eyebrow">人物任务线</span><h2>故人与同行者</h2><p>沿着人物的委托，读懂交织的命运。</p></a><a class="feature" href="#court-ambrus"><span class="eyebrow">宫廷活动</span><h2>侯爵的领地</h2><p>血窖、车队与地牢里的不同遭遇。</p></a><a class="feature" href="#shrines"><span class="eyebrow">探索集合</span><h2>山谷的隐秘角落</h2><p>追寻古迹、圣物与道路之外的线索。</p></a></div><p class="welcome-hint">目录与简介不展开故事结局。进入任务后，可主动阅读完整故事。</p></div>`;
+    return Dawnwalker.overview.renderHome(model.data,DawnwalkerCounts);
   }
   function renderEntry(e) {
     return `${topLine(e.category)}<p class="eyebrow">${types[e.type]}</p><h1 id="reading-title">${esc(e.title)}</h1><div class="intro-block"><p class="eyebrow">故事开端 · 无剧透简介</p><p class="intro">${esc(e.intro)}</p></div>${portraitList(e.npcs)}<div class="ornament" aria-hidden="true">✧</div>${e.sections.map(s=>`<section class="entry-section"><h2>${esc(s.title)}</h2>${s.intro?`<p class="section-intro">${esc(s.intro)}</p>`:''}${s.questIds.map(qid=>card(qid,e.id)).join('')}</section>`).join('')}${e.related.length?`<div class="related">${e.related.map(id=>link(id,entries.get(id).title)).join('')}</div>`:''}`;
@@ -25,8 +25,7 @@ Dawnwalker.createReader = (model,remember) => {
   }
   function buildStory(q, target) {
     target.innerHTML=q.sections.map(s=>`<section><h2>${esc(s.title)}</h2>${s.paragraphs.map(p=>`<p>${esc(p)}</p>`).join('')}</section>`).join('')+
-      (q.outcomes.length?`<section><h2>结局与不同结果</h2><ul class="outcomes">${q.outcomes.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></section>`:'')+
-      (q.note?`<p class="story-note">${esc(q.note)}</p>`:'');
+      (q.outcomes.length?`<section><h2>结局与不同结果</h2><ul class="outcomes">${q.outcomes.map(p=>`<li>${esc(p)}</li>`).join('')}</ul></section>`:'');
     enhanceStory(target);
   }
   const reduced = () => matchMedia('(prefers-reduced-motion:reduce)').matches;
@@ -39,11 +38,11 @@ Dawnwalker.createReader = (model,remember) => {
     headings.forEach((h,i)=>{h.id='chapter-'+i;h.tabIndex=-1;});
     if(headings.length>1) {
       const nav=document.createElement('nav');nav.className='chapter-nav';nav.setAttribute('aria-label','本篇目录');
-      nav.innerHTML='<span>本篇目录</span>'+headings.map((h,i)=>`<button type="button" data-chapter="${i}">${esc(h.textContent)}</button>`).join('');
-      nav.addEventListener('click',event=>{const b=event.target.closest('button');if(!b)return;const h=headings[Number(b.dataset.chapter)];h.focus({preventScroll:true});h.scrollIntoView({behavior:reduced()?'instant':'smooth',block:'start'});});
+      nav.innerHTML='<span>本篇目录</span>'+headings.map((h,i)=>`<wa-button appearance="plain" data-chapter="${i}">${esc(h.textContent)}</wa-button>`).join('');
+      nav.addEventListener('click',event=>{const b=event.target.closest('wa-button');if(!b)return;const h=headings[Number(b.dataset.chapter)];h.focus({preventScroll:true});h.scrollIntoView({behavior:reduced()?'instant':'smooth',block:'start'});});
       target.prepend(nav);
     }
-    const close=document.createElement('button');close.type='button';close.className='close-story';close.textContent='收起故事，返回简介';
+    const close=document.createElement('wa-button');close.appearance='outlined';close.className='close-story';close.textContent='收起故事，返回简介';
     close.addEventListener('click',()=>{const details=target.closest('details');const summary=details.querySelector('summary');summary.scrollIntoView({block:'start'});summary.focus({preventScroll:true});collapse(details);});
     target.append(close);
   }

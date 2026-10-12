@@ -1,0 +1,60 @@
+name: Publish Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: repository-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ci-tools
+    steps:
+      - name: Check out website
+        uses: https://github.com/actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Verify deployment tools
+        run: |
+          docker --version
+          test -S /var/run/docker.sock
+          command -v bash
+          command -v tar
+          command -v curl
+      - name: Validate sidebar link configuration
+        env:
+          GITEA_SERVER_URL: ${{ gitea.server_url }}
+          REPOSITORY: ${{ gitea.repository }}
+          PAGES_URL: ${{ vars.PAGES_URL }}
+          PAGES_REPO_TOKEN: ${{ secrets.PAGES_REPO_TOKEN }}
+        run: bash .gitea/scripts/update-pages-link.sh --check
+      - name: Set up Python
+        uses: https://github.com/actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - name: Set up Node.js
+        uses: https://github.com/actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Validate and build website
+        run: |
+          npm ci
+          python scripts/test_catalog.py
+          npm run build
+      - name: Publish to local Pages
+        env:
+          RELEASE_ID: ${{ gitea.sha }}
+          REPOSITORY: ${{ gitea.repository }}
+          PAGES_CONTAINER: local-pages
+        run: bash .gitea/scripts/deploy-pages.sh
+      - name: Update repository sidebar link
+        env:
+          GITEA_SERVER_URL: ${{ gitea.server_url }}
+          REPOSITORY: ${{ gitea.repository }}
+          PAGES_URL: ${{ vars.PAGES_URL }}
+          PAGES_REPO_TOKEN: ${{ secrets.PAGES_REPO_TOKEN }}
+        run: bash .gitea/scripts/update-pages-link.sh
