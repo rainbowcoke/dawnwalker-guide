@@ -4,6 +4,7 @@ import json
 import html
 import re
 import subprocess
+import hashlib
 from pathlib import Path
 import build_catalog
 import build_guide
@@ -15,12 +16,14 @@ def build():
     build_catalog.build()
     build_guide.build()
     subprocess.run(['node', str(ROOT/'scripts/build_vendor.cjs')],check=True)
+    posters=json.loads(subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--posters'],text=True,encoding='utf-8'))
+    poster_versions=json.dumps({file:hashlib.sha256((ROOT/file).read_bytes()).hexdigest()[:12] for file in posters},separators=(',',':'))
+    (ROOT/'assets/poster-versions.js').write_text('(function(root){const versions='+poster_versions+';if(typeof module==="object"&&module.exports)module.exports=versions;else root.DawnwalkerPosterVersions=versions;})(typeof window==="undefined"?globalThis:window);\n',encoding='utf-8')
     pages=json.loads(subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs')],text=True,encoding='utf-8'))
     search_index=subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--search-index'],text=True,encoding='utf-8')
     (ROOT/'assets/data/search-index.json').write_text(search_index,encoding='utf-8')
     navigation=subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--navigation'],text=True,encoding='utf-8')
     counts=subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--counts'],text=True,encoding='utf-8')
-    posters=json.loads(subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--posters'],text=True,encoding='utf-8'))
     images={item[role] for kind in build_catalog.KINDS
             for item in json.loads((ROOT/'data/catalog'/f'{kind}.json').read_text(encoding='utf-8'))['items']
             for role in ['icon','illustration'] if role in item}
@@ -30,7 +33,7 @@ def build():
         for item in document['items']:
             for recipe in item.get('recipes',[]):
                 images.update(m['icon'] for m in recipe['materials'])
-    files=[ROOT/'index.html',ROOT/'assets/guide-data.js',*sorted((ROOT/'css').glob('*.css')),
+    files=[ROOT/'index.html',ROOT/'assets/guide-data.js',ROOT/'assets/poster-versions.js',*sorted((ROOT/'css').glob('*.css')),
            *sorted((ROOT/'js').glob('*.js')),*sorted((ROOT/'assets/npcs/portraits').glob('*.webp')),
            *[ROOT/'assets/data'/f'{kind}.json' for kind in (*build_catalog.KINDS,'quest-rewards')],
            *[ROOT/image for image in sorted(images)],*[ROOT/poster for poster in posters],ROOT/'assets/vendor/guide-ui.js',ROOT/'assets/vendor/guide-ui.css',ROOT/'assets/data/search-index.json']
@@ -46,6 +49,8 @@ def build():
         target=destination/file.relative_to(ROOT);target.parent.mkdir(parents=True,exist_ok=True)
         shutil.copyfile(file,target)
     template=(ROOT/'index.html').read_text(encoding='utf-8')
+    poster_version=hashlib.sha256((ROOT/'assets/poster-versions.js').read_bytes()).hexdigest()[:12]
+    template=template.replace('src="assets/poster-versions.js"','src="assets/poster-versions.js?v='+poster_version+'"')
     template=re.sub(r'(<nav class="primary-navigation"[^>]*>).*?(</nav>)',lambda m:m[1]+navigation+m[2],template,count=1,flags=re.S)
     template=re.sub(r'(<script id="catalog-counts">).*?(</script>)',lambda m:m[1]+'window.DawnwalkerCounts='+counts+';'+m[2],template,count=1,flags=re.S)
     home=subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--home'],text=True,encoding='utf-8')

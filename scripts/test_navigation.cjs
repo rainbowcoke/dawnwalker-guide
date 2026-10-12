@@ -17,6 +17,16 @@ for(const tree of P.trees){
  }
  const baseline={巫术:1342,剑术:1852,血族:1784}[tree];if(tree!=='巫术')assert(layout.width<=baseline*.95);else{assert.equal(layout.width,1328);assert.equal(layout.offsets.get('skill-human_fountainofyouth'),148);for(const i of items.filter(i=>i.layout.kind==='ability'))assert.equal(layout.offsets.get(i.id),148);const branches=items.filter(i=>i.prerequisites.some(p=>p.id==='skill-human_bloodcost')).map(i=>L.routeEdge(layout,'skill-human_bloodcost',i.id));assert.equal(branches.length,2);assert.deepEqual(branches[0].slice(0,2),branches[1].slice(0,2));for(const route of branches)assert.equal(route[1].y,route.at(-1).y-16);}
  assert.equal(new Set(items.filter(i=>i.layout.kind==='ability').map(i=>layout.coordinates.get(i.id).x)).size,2);
+ if(tree==='血族'){
+  const parent='skill-vampire_blooddrinking',children=['skill-vampire_drinkinghumanblood','skill-vampire_drinkinganimalblood','skill-vampire_vrakhirmutation'];
+  const root=layout.coordinates.get(parent),positions=children.map(id=>layout.coordinates.get(id)),routes=children.map(id=>L.routeEdge(layout,parent,id));
+  assert.equal(positions[0].x,root.x-148);assert.equal(positions[1].x,root.x);assert.equal(positions[2].x,root.x+148);
+  assert.equal(positions[0].y,positions[1].y);assert.equal(positions[2].y-positions[1].y,240);
+  assert.equal(items.find(i=>i.id===children[2]).row,2);
+  for(const id of children)assert.deepEqual(items.find(i=>i.id===id).prerequisites.map(p=>p.id),[parent]);
+  assert.equal(routes[0].length,4);assert.equal(routes[1].length,2);assert.equal(routes[2].length,4);
+  assert.deepEqual(routes[0].slice(0,2),routes[2].slice(0,2));assert.equal(routes[2][2].x,positions[2].x);
+ }
 }
 console.log('PASS posters, compact relative coordinates, all node bounds and all edge clearances');
 (async()=>{

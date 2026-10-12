@@ -68,7 +68,7 @@ const walk=dir=>fs.readdirSync(path.join(root,dir),{withFileTypes:true}).flatMap
 assert.deepEqual(walk('assets/npcs').sort(),portraits,'Unused or missing portraits');
 for(const match of html.matchAll(/(?:src|href)="([^"#]+)"/g))if(!/^[a-z]+:/i.test(match[1]))assert(fs.existsSync(path.join(root,match[1]))||fs.existsSync(path.join(root,'dist',match[1],'index.html')),`Missing ${match[1]}`);
 const catalogImages=[...new Set(['equipment','skills','consumables'].flatMap(kind=>{const d=read('data/catalog/'+kind+'.json');return [...Object.values(d.uiIcons),...d.items.flatMap(i=>[i.icon,i.illustration,...(i.recipes||[]).flatMap(r=>r.materials.map(m=>m.icon))].filter(Boolean))];}))];
-assert.deepEqual(walk('assets').sort(),['assets/guide-data.js','assets/vendor/guide-ui.js','assets/vendor/guide-ui.css',...portraits,...['equipment','skills','consumables','quest-rewards','search-index'].map(n=>'assets/data/'+n+'.json'),...catalogImages,...require('../js/overview.js').posterFiles].sort());
+assert.deepEqual(walk('assets').sort(),['assets/guide-data.js','assets/poster-versions.js','assets/vendor/guide-ui.js','assets/vendor/guide-ui.css',...portraits,...['equipment','skills','consumables','quest-rewards','search-index'].map(n=>'assets/data/'+n+'.json'),...catalogImages,...require('../js/overview.js').posterFiles].sort());
 const missingPortrait=path.resolve(fixture,portraits[0]);
 const portraitRelative=path.relative(path.resolve(fixture),missingPortrait);
 assert(portraitRelative&&!portraitRelative.startsWith('..')&&!path.isAbsolute(portraitRelative),'Deletion target is outside the test fixture');

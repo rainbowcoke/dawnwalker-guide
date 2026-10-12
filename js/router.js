@@ -22,9 +22,8 @@ Dawnwalker.createRouter=(model,reader,catalog,references)=>{
     const ref=references.parseLocation();
     let y=saved?.y||0;
     if(ref){
-      catalog.leave();
       lastLocation=location.pathname+location.hash;
-      const previousPath=references.listPath();await references.enter(ref,saved?.reference);
+      const previousPath=references.listPath();await references.enter(ref,saved?.reference,()=>catalog.leave());
       if(ticket!==generation)return;
       y=saved?.y??(ref.id||previousPath===references.listPath()?scrollY:references.directoryY());
     }else{
@@ -39,7 +38,7 @@ Dawnwalker.createRouter=(model,reader,catalog,references)=>{
       if(listing){const priorY=catalog.enter(path,saved?.task);y=saved?.y??priorY;}
       else{
         const html=q?renderQuest(q,context):e?renderEntry(e):!id&&!path?renderHome():`${topLine('任务指南')}<div class="no-route"><h1>未找到这个故事</h1><p>可以返回任务列表，按名称继续查找。</p><a href="quests/">返回任务列表</a></div>`;
-        $('reader').innerHTML=`<div class="reader-inner">${html}</div>`;
+        if(ticket!==1||id||path||!$('reader').querySelector('.home-overview'))$('reader').innerHTML=`<div class="reader-inner">${html}</div>`;
         Dawnwalker.ui.enhance($('reader'));
         if(taskPage)$('reader').querySelector('.reader-topline')?.insertAdjacentHTML('afterbegin',`<a class="task-back" href="${taskPage.path}">${Dawnwalker.presentation.icon('arrow-left')}返回${taskPage.label}</a>`);
         if(q)references.addQuestRewards(q.id,()=>ticket===generation);
@@ -59,7 +58,7 @@ Dawnwalker.createRouter=(model,reader,catalog,references)=>{
       document.title=(title?title+' · ':'')+'《黎明行者之血》中文游戏指南';
       document.querySelector('link[rel=canonical]').href='https://rainbowcoke.github.io/dawnwalker-guide/'+(id?'#'+encodeURIComponent(id):listing?path.page?.path||'quests/':'');
       document.querySelector('meta[name=description]').content=q?.intro||e?.intro||'《黎明行者之血》中文游戏指南：查询任务、装备、技能与消耗品。';
-      N.mark(id||listing?'quests':'',taskPage?.path||path?.page?.path);imageFallback($('reader'));animateIn($('reader').firstElementChild,0);
+      N.mark(id||listing?'quests':'',taskPage?.path||path?.page?.path);imageFallback($('reader'));if(id)animateIn($('reader').firstElementChild,0);
     }
     if(ticket!==generation)return;
     requestAnimationFrame(()=>requestAnimationFrame(()=>{if(ticket!==generation)return;window.scrollTo(0,y);busy=false;remember();}));

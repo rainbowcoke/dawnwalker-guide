@@ -22,7 +22,7 @@ Dawnwalker.createModel = data => {
     return names.length ? `<div class="npc-list" aria-label="主要人物">${names.map(name=>`<div class="npc">${avatar(name)}<span class="name">${esc(name)}<small lang="en">${esc(data.npcs[name].en)}</small></span></div>`).join('')}</div>` : '';
   }
   function imageFallback(root) {
-    root.querySelectorAll('img').forEach(img=>img.addEventListener('error',()=>img.remove(),{once:true}));
+    Dawnwalker.ui.enhance(root);
   }
   const questRelations = new Map(data.quests.map(q => [q.id, []]));
   for (const relation of data.relations) {

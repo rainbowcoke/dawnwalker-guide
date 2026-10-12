@@ -21,7 +21,7 @@ Dawnwalker.createCatalog=(model,references)=>{
     const prior=restored?.key===key?restored:states.get(key)||{search:'',person:'',y:0};
     const title=page?.label||'任务总览';
     if(!page){
-      $('reader').innerHTML=Dawnwalker.overview.renderOverview('quests',data);
+      if(!$('reader').querySelector('[data-overview="quests"]'))$('reader').innerHTML=Dawnwalker.overview.renderOverview('quests',data);
       home.append(tools);$('equipment-level').hidden=true;
       N.mark('quests','quests/');Dawnwalker.ui.enhance($('reader'));return prior.y||0;
     }

@@ -20,6 +20,14 @@
     const abilityColumns=[...new Set(abilities.map(i=>i.layout.canvasX))].sort((a,b)=>a-b);
     const abilityX=traitRight+32;
     const coordinates=new Map(items.map(i=>[i.id,{x:i.layout.kind==='ability'?abilityX+nodeWidth/2+148*abilityColumns.indexOf(i.layout.canvasX):traitX(i),y:y(i.layout.canvasY)}]));
+    // Keep the blood-drinking branches in separate columns, with mutation on
+    // its original third row. This leaves a straight lane past the second row.
+    const bloodRoot=coordinates.get('skill-vampire_blooddrinking');
+    if(bloodRoot){
+      for(const [id,column] of [['skill-vampire_drinkinghumanblood',-1],['skill-vampire_drinkinganimalblood',0],['skill-vampire_vrakhirmutation',1]]){
+        const c=coordinates.get(id);if(c){const nextX=bloodRoot.x+column*148;offsets.set(id,(offsets.get(id)||0)+nextX-c.x);c.x=nextX;}
+      }
+    }
     const width=Math.ceil(Math.max(...[...coordinates.values()].map(c=>c.x))+94),height=Math.ceil(Math.max(...[...coordinates.values()].map(c=>c.y))+112);
     const bounds=[...coordinates].map(([id,c])=>({id,l:c.x-nodeWidth/2-8,r:c.x+nodeWidth/2+8,t:c.y-nodeHeight/2-8,b:c.y+nodeHeight/2+8}));
     return {coordinates,nodeWidth,nodeHeight,scaleX,width,height,abilityX,ultimateY:y(dims.ultimateY),bounds,offsets};
@@ -33,7 +41,8 @@
     const a=layout.coordinates.get(parent),b=layout.coordinates.get(child);
     if(!a||!b)return [];
     const start={x:a.x,y:a.y+layout.nodeHeight/2+8},end={x:b.x,y:b.y-layout.nodeHeight/2-8};
-    const middle=parent==='skill-human_bloodcost'?end.y-16:(start.y+end.y)/2,direct=[start,{x:start.x,y:middle},{x:end.x,y:middle},end];
+    const bloodBranch=parent==='skill-vampire_blooddrinking'&&layout.coordinates.get('skill-vampire_drinkinganimalblood');
+    const middle=bloodBranch?(start.y+bloodBranch.y-layout.nodeHeight/2-8)/2:parent==='skill-human_bloodcost'?end.y-16:(start.y+end.y)/2,direct=[start,{x:start.x,y:middle},{x:end.x,y:middle},end];
     const clear=(p,q)=>!layout.bounds.some(rect=>crosses(p,q,rect));
     if(direct.slice(1).every((p,i)=>clear(direct[i],p)))return simplify(direct);
     const xs=[...new Set([16,layout.width-16,start.x,end.x,...layout.bounds.flatMap(r=>[r.l,r.r])])].sort((a,b)=>a-b);

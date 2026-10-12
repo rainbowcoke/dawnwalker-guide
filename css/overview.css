@@ -47,9 +47,11 @@ wa-breadcrumb-item:not(:defined)>[slot=separator]{display:none}
 .poster-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:15px;margin-top:5px;border-top:1px solid #c5ad7c40;font-size:10px;color:#bcb7a4}
 .poster-enter{display:inline-flex;align-items:center;gap:5px;color:#d4bc89;white-space:nowrap;font-size:12px}
 .poster-enter svg{width:16px;height:16px}
-.poster-link:hover,.poster-link.feature:hover{transform:translateY(-3px);background:none;border:0}
+.poster-link:hover,.poster-link.feature:hover{background:none;border:0}
+@media(hover:hover) and (pointer:fine){.poster-link:hover,.poster-link.feature:hover{transform:translateY(-3px)}
 .poster-link:hover .poster-card{border-color:#d5bb82}
 .poster-link:hover .poster-art{transform:scale(1.025)}
+}
 .poster-link:focus-visible{outline:2px solid var(--gold);outline-offset:5px}
 .poster-link[data-accent=witchcraft]{--poster-accent:#c0a1e0}
 .poster-link[data-accent=swordsmanship]{--poster-accent:#c6ced5}
@@ -93,19 +95,18 @@ wa-button.icon-button::part(button){width:44px;height:44px;padding:0;display:gri
 .card-level-control .field-label{color:var(--muted);font-size:13px}
 .card-level-control wa-select{display:block;width:120px;min-width:120px}
 .header-search{display:flex;align-items:center;position:relative}
-.header-search-controls{display:flex;align-items:center;gap:6px;width:clamp(260px,26vw,380px)}
+.header-search-controls{display:flex;align-items:center;position:absolute;right:calc(100% + 8px);width:min(380px,26vw);background:#101110;clip-path:inset(0 0 0 0%)}
 .header-search-controls>wa-input{flex:1;min-width:0}
-.header-search-controls>#close-search{flex:none}
-.header-search-results{position:absolute;top:calc(100% + 10px);right:0;z-index:30;width:min(620px,calc(100vw - 28px));border:1px solid #514a37;border-radius:3px;padding:16px;background:#171a14;box-shadow:0 12px 30px #0009;max-height:min(470px,60dvh);overflow:auto;overscroll-behavior:contain}
+.header-search-controls>#close-search{display:none}
+.header-search-results{position:fixed;z-index:30;box-sizing:border-box;width:min(620px,calc(100vw - 28px));border:1px solid #514a37;border-radius:3px;padding:16px;background:#171a14;box-shadow:0 12px 30px #0009;max-height:min(470px,60dvh);overflow:auto;overscroll-behavior:contain}
 .header-search-results #global-search-status{margin:0 0 10px;font-size:13px;color:var(--muted)}
 .header-search-results #global-search-results{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 24px}
 .header-search-results .search-result-group{margin:0}
 .header-search-results .search-result-group h2{font-size:18px;margin:8px 0}
 .header-search-results .search-result{font-size:13px;padding:10px 0}
 .header-search-results .search-result small,.header-search-results .search-result>span{color:var(--muted);font-size:12px}
-.masthead.search-expanded{grid-template-columns:minmax(250px,1fr) auto minmax(350px,1fr)}
 .header-search[hidden],.header-search-controls[hidden],.header-search-results[hidden],#global-search-toggle[hidden]{display:none!important}
-.nav-dropdown{display:block}
+.nav-dropdown{display:block;flex:1;min-width:0;text-align:center}
 .nav-dropdown:not(:defined)>wa-dropdown-item{display:none}
 .nav-label{padding-inline:16px}
 .modal-header wa-button::part(button){width:44px;height:44px;padding:0}
@@ -169,12 +170,12 @@ html:not(.js-enabled) .point-controls .js-only{display:none}
 wa-breadcrumb-item a{font:12px var(--wa-font-family-body);color:var(--muted)}
 wa-breadcrumb-item a[aria-current]{color:var(--gold)}
 .chapter-nav wa-button::part(button){background:none;font-size:11px;padding:5px 8px;min-height:32px}
-@media(max-width:1199px){.masthead.search-expanded{grid-template-columns:1fr auto}
-.header-search-controls{width:320px}
+@media(max-width:1199px){.masthead.search-expanded .brand{visibility:hidden}
+.header-search-controls{width:min(380px,calc(100vw - 148px))}
 }
-@media(max-width:899px){.masthead.search-expanded .masthead-actions{grid-column:1/-1;grid-row:3;justify-self:stretch}
-.masthead.search-expanded .header-search{flex:1}
-.header-search-controls{width:100%}
+@media(min-width:1200px){.masthead.search-expanded .primary-navigation{visibility:hidden}
+}
+@media(max-width:899px){
 .nav-label{padding-inline:12px}
 }
 @media(max-width:599px){#directory-tools{padding:14px;gap:14px}

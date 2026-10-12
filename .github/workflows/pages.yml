@@ -37,6 +37,16 @@ jobs:
           python scripts/test_catalog.py
           python scripts/build_site.py
           npm test
+      - name: Verify Pages publishing source
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          source_type=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.build_type')
+          if [ "$source_type" != "workflow" ]; then
+            echo "::error::Set Settings > Pages > Build and deployment > Source to GitHub Actions. Publishing the repository root omits generated routes and causes 404 errors."
+            exit 1
+          fi
       - uses: actions/configure-pages@v5
         if: github.event_name != 'pull_request'
       - uses: actions/upload-pages-artifact@v4

@@ -159,7 +159,13 @@ Dawnwalker.createReferences=(model,remember)=>{
       node.querySelector('.point-controls').outerHTML=P.controls(item,opts());
     }
     for(const edge of document.querySelectorAll('.tree-edges path'))edge.classList.toggle('allocated-edge',!!planner.rank(edge.dataset.parent)&&!!planner.rank(edge.dataset.child));
-    if($('planner-summary')){$('planner-summary').innerHTML=plannerSummary();Dawnwalker.ui.enhance($('planner-summary'));}
+    const summary=$('planner-summary');
+    if(summary){
+      const totals=planner.totals();summary.querySelector('.point-total strong').textContent=totals.total;
+      summary.querySelectorAll('.tree-totals b').forEach((label,index)=>{label.textContent=totals[P.trees[index]];});
+      $('undo-points').disabled=!planner.canUndo();$('clear-points').disabled=!totals.total;
+      $('allocation-notice').textContent=notice;
+    }
     if(selected)renderModal();
     else {const target=skill?document.querySelector(`[data-skill="${skill}"][data-change="${delta}"]`):$(focusId);focusReady(target);}
     window.GuideUI?.icons();save();remember();
@@ -188,12 +194,15 @@ Dawnwalker.createReferences=(model,remember)=>{
     const v=node.closest('.tree-viewport'),p=panzooms.get(v.dataset.tree),s=Math.max(.7,p.getScale());p.zoom(s);requestAnimationFrame(()=>{p.pan(v.clientWidth/(2*s)-Number(node.dataset.x),v.clientHeight/(2*s)-Number(node.dataset.y));node.querySelector('a').focus({preventScroll:true});});
     v.scrollIntoView({block:'center'});remember();
   }
-  async function enter(route,restored){
+  async function enter(route,restored,beforeCommit=()=>{}){
     save();const ticket=++generation,oldSection=section,oldKey=pageKey,oldPage=page;
-    section=route.section;selected=route.id;
-    document.body.classList.remove('home');document.body.classList.add('references');document.body.dataset.referenceSection=section;
+    let committed=false;
+    function commit(){
+      if(committed)return;committed=true;beforeCommit();section=route.section;selected=route.id;
+      document.body.classList.remove('home','reading');document.body.classList.add('references');document.body.dataset.referenceSection=section;
+    }
     try{
-      const payload=await load(section);if(ticket!==generation)return;
+      const payload=await load(route.section);if(ticket!==generation)return;commit();
       const item=payload.items.find(i=>i.id===selected);
       const origin=history.state?.originPath&&N.parse(history.state.originPath);
       page=route.page||(selected?((origin?.section===section?origin.page:null)||(oldSection===section&&oldPage?oldPage:N.forItem(section,item||{}))):null);
@@ -204,7 +213,7 @@ Dawnwalker.createReferences=(model,remember)=>{
       if(section==='skills'&&!planner)planner=Dawnwalker.createPlanner(payload.items);
       if(!page&&!selected){
         for(const p of panzooms.values())p.destroy();panzooms.clear();toolHome.append(tools);levelControl.hidden=true;
-        states.set(pageKey,{...prior,payload});$('reader').innerHTML=Dawnwalker.overview.renderOverview(section,payload);
+        states.set(pageKey,{...prior,payload});if(!$('reader').querySelector(`[data-overview="${section}"]`))$('reader').innerHTML=Dawnwalker.overview.renderOverview(section,payload);
         N.mark(section,section+'/');Dawnwalker.ui.enhance($('reader'));await renderModal();return;
       }
       if(!same){for(const p of panzooms.values())p.destroy();panzooms.clear();shell();}
@@ -214,11 +223,11 @@ Dawnwalker.createReferences=(model,remember)=>{
       if(!same||restored)renderCatalog();
       await renderModal();
     }catch(e){
-      if(ticket!==generation)return;
+      if(ticket!==generation)return;commit();
       console.error(e);toolHome.append(tools);
       $('reader').innerHTML=`<div class="reference-shell"><h1>${P.labels[section]}加载失败</h1><p>请检查网络连接后重试。</p><wa-button appearance="outlined" size="s" id="retry-reference" type="button">重新加载</wa-button></div>`;
       Dawnwalker.ui.enhance($('reader'));
-      $('retry-reference').addEventListener('click',()=>enter(route,restored));
+      $('retry-reference').addEventListener('click',()=>enter(route,restored,beforeCommit));
     }
   }
   function leave(){
