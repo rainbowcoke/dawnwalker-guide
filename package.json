@@ -2,7 +2,7 @@
   "name": "dawnwalker-guide",
   "private": true,
   "scripts": {
-    "test": "node scripts/test_navigation.cjs && node scripts/test_planner.cjs && node scripts/test_guide.cjs && node scripts/test_catalog.cjs && node scripts/test_header.cjs && node scripts/test_layout_stability.cjs",
+    "test": "node scripts/test_catalog_output.cjs && node scripts/test_navigation.cjs && node scripts/test_planner.cjs && node scripts/test_guide.cjs && node scripts/test_catalog.cjs && node scripts/test_header.cjs && node scripts/test_layout_stability.cjs",
     "build": "python scripts/build_site.py",
     "preview": "node scripts/preview.cjs"
   },

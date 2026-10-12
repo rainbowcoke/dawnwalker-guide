@@ -21,6 +21,9 @@ def build():
     (ROOT/'assets/poster-versions.js').write_text('(function(root){const versions='+poster_versions+';if(typeof module==="object"&&module.exports)module.exports=versions;else root.DawnwalkerPosterVersions=versions;})(typeof window==="undefined"?globalThis:window);\n',encoding='utf-8')
     pages=json.loads(subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs')],text=True,encoding='utf-8'))
     search_index=subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--search-index'],text=True,encoding='utf-8')
+    search_document=json.loads(search_index)
+    if search_document.get('schemaVersion')!=1 or not isinstance(search_document.get('items'),list):
+        raise ValueError('Invalid generated search index')
     (ROOT/'assets/data/search-index.json').write_text(search_index,encoding='utf-8')
     navigation=subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--navigation'],text=True,encoding='utf-8')
     counts=subprocess.check_output(['node',str(ROOT/'scripts/render_catalog.cjs'),'--counts'],text=True,encoding='utf-8')

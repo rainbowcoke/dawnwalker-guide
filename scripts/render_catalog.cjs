@@ -5,10 +5,11 @@ const N=require('../js/navigation.js'),O=require('../js/overview.js'),vm=require
 const sandbox={window:{}};vm.runInNewContext(fs.readFileSync(path.join(root,'assets/guide-data.js'),'utf8'),sandbox);
 const guide=JSON.parse(JSON.stringify(sandbox.window.DawnwalkerData));
 const datasets=Object.fromEntries(Object.keys(P.labels).map(s=>[s,JSON.parse(fs.readFileSync(path.join(root,'data/catalog',s+'.json'),'utf8'))]));
-if(process.argv.includes('--posters')){process.stdout.write(JSON.stringify(O.posterFiles));process.exit(0);}
-if(process.argv.includes('--home')){process.stdout.write(O.renderHome(guide,Object.fromEntries(Object.entries(datasets).map(([k,d])=>[k,d.items.length]))));process.exit(0);}
-if(process.argv.includes('--navigation')){process.stdout.write(N.menu(datasets.skills.uiIcons));process.exit(0);}
-if(process.argv.includes('--counts')){process.stdout.write(JSON.stringify(Object.fromEntries(Object.entries(datasets).map(([k,d])=>[k,d.items.length]))));process.exit(0);}
+// Return from the CommonJS module and let stdout drain before Node exits.
+if(process.argv.includes('--posters')){process.stdout.write(JSON.stringify(O.posterFiles));return;}
+if(process.argv.includes('--home')){process.stdout.write(O.renderHome(guide,Object.fromEntries(Object.entries(datasets).map(([k,d])=>[k,d.items.length]))));return;}
+if(process.argv.includes('--navigation')){process.stdout.write(N.menu(datasets.skills.uiIcons));return;}
+if(process.argv.includes('--counts')){process.stdout.write(JSON.stringify(Object.fromEntries(Object.entries(datasets).map(([k,d])=>[k,d.items.length]))));return;}
 if(process.argv.includes('--search-index')){
  const rows=[],seen=new Set();
  const people=names=>names.flatMap(n=>[n,guide.npcs[n]?.en,...(guide.npcs[n]?.aliases||[])]);
@@ -24,7 +25,7 @@ if(process.argv.includes('--search-index')){
   const effects=[...(i.effects||[]),...(i.ranks||[]).flatMap(r=>r.effects||[]),...(i.levels||[]).flatMap(l=>l.effects||[]),...(i.levelEffects||[]).flatMap(l=>l.effects||[]),...(i.ranks||[]).flatMap(r=>(r.levelEffects||[]).flatMap(l=>l.effects||[]))];
   rows.push({section,name:i.cn,en:i.en,category:N.forItem(section,i).label,href:section+'/'+i.id+'/',description:(i.description||effects.join('；')).slice(0,120),terms:[i.cn,i.en,i.description,...new Set(effects)].join(' ')});
  }
- process.stdout.write(JSON.stringify({schemaVersion:1,items:rows}));process.exit(0);
+ process.stdout.write(JSON.stringify({schemaVersion:1,items:rows}));return;
 }
 const source=JSON.parse(fs.readFileSync(path.join(root,'data/guide-source.json'),'utf8'));
 const questNames=Object.fromEntries(source.quests.map(q=>[q.id,q.cn]));
